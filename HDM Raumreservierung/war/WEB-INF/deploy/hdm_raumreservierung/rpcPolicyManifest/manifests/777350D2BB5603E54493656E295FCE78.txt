@@ -1,0 +1,2 @@
+serviceClass: de.hdm.reservierung.client.Service
+path: DB492A80CD90CDF17F522E7EBA434924.gwt.rpc
