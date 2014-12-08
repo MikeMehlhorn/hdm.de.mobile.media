@@ -35,7 +35,7 @@ public class SendMail {
 
 	}
 
-	public static void overBooking(ArrayList<TimeSlot> timeSlotList, RoomBooking roomBooking, User user) {
+	public static void overBooking(RoomBooking roomBooking) {
 		setProperties();
 		
 		String a = DateFormat.FormatDateDDMMYYYY2(roomBooking.getStartzeit()
@@ -46,11 +46,11 @@ public class SendMail {
 		ArrayList<String> y = DateFormat.SeperateDateTime2String(roomBooking
 				.getEndzeit().toString());
 		
-		mailtext = "Sehr geehrte(r) " + user.getVorname() + " "
-		+ user.getNachname() + "," + "\n\n Ihre Raumreservierung wurde Storniert, da ein Professor den Raum reserviert hat."
+		mailtext = "Sehr geehrte(r) " + roomBooking.getUser().getVorname() + " "
+		+ roomBooking.getUser().getNachname() + "," + "\n\n Ihre Raumreservierung wurde Storniert, da ein Professor den Raum reserviert hat."
 	
 				+ "Es handelt sich um folgende Raumreservierung: \n\n "
-				+ "Raumnummer: " + roomBooking.getRaum_id() + "\n Datum:" + a
+				+ "Raumnummer: " + roomBooking.getRoom().getId() + "\n Datum:" + a
 				+ "\n Zeitraum: " + x.get(1) + " - " + y.get(1) + "\n\n"
 				+ "Mit freundlichen Grüßen \n"
 				+ "HdM-Stuttgart - Raumreserierungssystem";
@@ -80,7 +80,7 @@ public class SendMail {
 		}
 	}
 
-	public static void cancelBooking(RoomBooking roomBooking, User user) {
+	public static void cancelBooking(RoomBooking roomBooking) {
 		setProperties();
 		String a = DateFormat.FormatDateDDMMYYYY2(roomBooking.getStartzeit()
 				.toString());
@@ -90,11 +90,11 @@ public class SendMail {
 		ArrayList<String> y = DateFormat.SeperateDateTime2String(roomBooking
 				.getEndzeit().toString());
 
-		mailtext = "Sehr geehrte(r) " + user.getVorname() + " "
-				+ user.getNachname() + "," + "\n\n Sie haben am "
+		mailtext = "Sehr geehrte(r) " + roomBooking.getUser().getVorname() + " "
+				+ roomBooking.getUser().getNachname() + "," + "\n\n Sie haben am "
 				+ new Date().toLocaleString()
 				+ " folgende Raumreservierung storniert: \n\n "
-				+ "Raumnummer: " + roomBooking.getRaum_id() + "\n Datum:" + a
+				+ "Raumnummer: " + roomBooking.getRoom().getId() + "\n Datum:" + a
 				+ "\n Zeitraum: " + x.get(1) + " - " + y.get(1) + "\n\n"
 				+ "Mit freundlichen Grüßen \n"
 				+ "HdM-Stuttgart - Raumreserierungssystem";

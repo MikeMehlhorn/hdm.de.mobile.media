@@ -5,14 +5,12 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 public class CustomCheckBox extends CheckBox {
 	
 private Integer timeId;
-private Integer bookingId;
 	
-	public CustomCheckBox(String value, Integer timeId, Integer bookingId){
+	public CustomCheckBox(String value, Integer timeId){
 		super();
 		this.setText(value);
 		this.setVisible(true);
 		this.timeId= timeId;
-		this.bookingId = bookingId;
 	}
 
 	/**
@@ -27,20 +25,6 @@ private Integer bookingId;
 	 */
 	public void setTimeId(Integer timeId) {
 		this.timeId = timeId;
-	}
-
-	/**
-	 * @return the bookingId
-	 */
-	public Integer getBookingId() {
-		return bookingId;
-	}
-
-	/**
-	 * @param bookingId the bookingId to set
-	 */
-	public void setBookingId(Integer bookingId) {
-		this.bookingId = bookingId;
 	}
 
 

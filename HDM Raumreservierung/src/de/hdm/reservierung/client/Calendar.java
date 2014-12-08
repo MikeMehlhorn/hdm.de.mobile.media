@@ -17,7 +17,6 @@ import org.gwtbootstrap3.extras.fullcalendar.client.ui.FullCalendar;
 import org.gwtbootstrap3.extras.fullcalendar.client.ui.Language;
 import org.gwtbootstrap3.extras.fullcalendar.client.ui.ViewOption;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,16 +32,23 @@ import de.hdm.reservierung.shared.RoomBooking;
 
 public class Calendar extends Template {
 
-	private final ServiceAsync greetingService = GWT
-			.create(Service.class);
-	
+	private ServiceAsync service = ClientsideSettings.getService();
+
 	private FlowPanel flowPanel = new FlowPanel();
 
 	private FullCalendar fc;
 	private final CustomDateTimePicker datum = new CustomDateTimePicker();
-	
+
 	private InputGroup inputGroup = new InputGroup();
 	private InputGroupAddon inputGroupAddon = new InputGroupAddon();
+	
+	private static final String red = "#FF0000";
+	private static final String green = "#00FF00";
+	private static final String blue = "#0000FF";
+	private static final String yellow = "#FFFF00";
+	private static final String lightblue = "#00FFFF";
+	private static final String pink = "#FF00FF";
+	
 
 	public Calendar() {
 
@@ -55,42 +61,40 @@ public class Calendar extends Template {
 
 		inputGroup.add(inputGroupAddon);
 		inputGroup.add(datum);
-		
+
 		Button month = new Button("Monatsansicht");
-		Button week = new Button("Wochenansicht");
-		
-		
-		
-	//	inputGroup.add(month);
-this.add(new HTML("</br>"));
+		//Button week = new Button("Wochenansicht");
+
+		// inputGroup.add(month);
+		this.add(new HTML("</br>"));
 		flowPanel.add(month);
-		
-		flowPanel.add(week);
-		//month.getElement().getStyle().setMarginBottom(10, Unit.PX);
-	
+
+		//flowPanel.add(week);
+		// month.getElement().getStyle().setMarginBottom(10, Unit.PX);
+
 		month.getElement().getStyle().setMarginRight(10, Unit.PX);
 		this.add(flowPanel);
 		this.add(new HTML("</br>"));
 		this.add(inputGroup);
-	
+
 		month.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				fc.setView(ViewOption.month);
-				
+
 			}
 		});
-		
-		week.addClickHandler(new ClickHandler() {
-			
+
+		/*week.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
 				fc.setView(ViewOption.agendaWeek);
-				
+
 			}
-		});
-		
+		});*/
+
 		CalendarConfig config = new CalendarConfig();
 		AgendaOptions agendaOptions = new AgendaOptions();
 		agendaOptions.setSlotDuration("00:30:00");
@@ -103,7 +107,7 @@ this.add(new HTML("</br>"));
 		config.setTimezone("local");
 		config.setLangauge(Language.German);
 		config.setSelectable(false);
-		
+
 		// config.setAgendaOptions(agendaOptions);
 
 		datum.addChangeDateHandler(new ChangeDateHandler() {
@@ -116,17 +120,13 @@ this.add(new HTML("</br>"));
 			}
 		});
 
-		
-	
 		fc = new FullCalendar("some_unique_id", ViewOption.agendaDay, config,
 				false);
-		
-		
 
 		fc.addLoadHandler(new LoadHandler() {
 			@Override
 			public void onLoad(LoadEvent event) {
-				greetingService
+				service
 						.getAllRaumbuchungen(new AsyncCallback<ArrayList<RoomBooking>>() {
 							@Override
 							public void onSuccess(ArrayList<RoomBooking> result) {
@@ -135,7 +135,6 @@ this.add(new HTML("</br>"));
 
 							@Override
 							public void onFailure(Throwable caught) {
-								
 
 							}
 						});
@@ -145,14 +144,13 @@ this.add(new HTML("</br>"));
 
 		this.add(new HTML("</br>"));
 		this.add(fc);
-		
+
 	}
 
 	protected void addEvents(ArrayList<RoomBooking> result) {
 		for (int i = 0; i < result.size(); i++) {
-			Event calEvent = new Event("1" + i, result.get(i).getRaum_id());
+			Event calEvent = new Event("1" + i, result.get(i).forCalendar());
 
-		
 			calEvent.setStartEditable(false);
 			calEvent.setDurationEditable(false);
 			calEvent.setEditable(false);
@@ -164,6 +162,36 @@ this.add(new HTML("</br>"));
 
 			// Date d = new Date(s.getTime());
 			// d.setHours(d.getHours() + 1);
+			
+			switch (result.get(i).getRoom().getId()) {
+			case "I210":
+				calEvent.setColor(red);
+				break;
+				
+			case "I213":
+				calEvent.setColor(green);
+				break;
+				
+			case "I215":
+				calEvent.setColor(blue);
+				break;
+				
+			case "I216":
+				calEvent.setColor(yellow);
+				break;
+				
+			case "I217":
+				calEvent.setColor(lightblue);
+				break;
+				
+			case "I218":
+				calEvent.setColor(pink);
+				break;
+
+			default:
+				break;
+			}
+			
 
 			calEvent.setEnd(result.get(i).getEndzeit());
 

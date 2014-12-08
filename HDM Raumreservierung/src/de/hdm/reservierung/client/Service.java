@@ -23,12 +23,11 @@ public interface Service extends RemoteService {
 	// <-- Roombooking -->
 	ArrayList<RoomBooking> getAllRaumbuchungenFromUser(User user);
 	ArrayList<RoomBooking> getAllRaumbuchungen();
-	ArrayList<TimeSlot> getAvailableRaumbuchungenByDateForStudent(String date,String room,User user);
-	ArrayList<TimeSlot> getAvailableRaumbuchungenByDateForDocent(String date,String room, User user);
-	void deleteRaumbuchung(ArrayList<Integer> deleteIdList);
-	void deleteAndInformUser(ArrayList<TimeSlot> timeSlotList);
-	RoomBooking getRoomBooking(Integer bookingId);
-	ArrayList<RoomBooking> insertRoomBooking(ArrayList<TimeSlot> overBooking, ArrayList<RoomBooking> roomBooking, String room, User user);
+	ArrayList<TimeSlot> getAvailableRaumbuchungenForStudent(String date,String room,User user);
+	ArrayList<TimeSlot> getAvailableRaumbuchungenForDocent(String date,String room, User user);
+	RoomBooking deleteRaumbuchung(Integer bookingId);
+	ArrayList<RoomBooking> insertRoomBooking(ArrayList<RoomBooking> roomBooking, String room, User user);
+	
 	
 	
 	//<-- User -->

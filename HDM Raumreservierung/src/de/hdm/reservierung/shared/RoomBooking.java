@@ -11,40 +11,14 @@ public class RoomBooking extends BusinessObjects {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer id, time_Id;
-	private String user_kuerzel, raum_id;
+	private Integer id;
 	private Timestamp startzeit, endzeit;
 	private String date;
+	private User user;
+	private TimeSlot timeSlot;
+	private Room room;
 
-	/**
-	 * @return the person_id
-	 */
-	public String getUser_kuerzel() {
-		return user_kuerzel;
-	}
-
-	/**
-	 * @param person_id
-	 *            the person_id to set
-	 */
-	public void setUser_kuerzel(String user_id) {
-		this.user_kuerzel = user_id;
-	}
-
-	/**
-	 * @return the raum_id
-	 */
-	public String getRaum_id() {
-		return raum_id;
-	}
-
-	/**
-	 * @param raum_id
-	 *            the raum_id to set
-	 */
-	public void setRaum_id(String raum_id) {
-		this.raum_id = raum_id;
-	}
+	
 
 	/**
 	 * @return the startzeit
@@ -106,20 +80,7 @@ public class RoomBooking extends BusinessObjects {
 		this.date = date;
 	}
 
-	/**
-	 * @return the time_Id
-	 */
-	public Integer getTime_Id() {
-		return time_Id;
-	}
 
-	/**
-	 * @param time_Id
-	 *            the time_Id to set
-	 */
-	public void setTime_Id(Integer time_Id) {
-		this.time_Id = time_Id;
-	}
 	
 	@Override
 	public String toString(){
@@ -131,8 +92,57 @@ public class RoomBooking extends BusinessObjects {
 		ArrayList<String> y = DateFormat
 				.SeperateDateTime2String(this.endzeit.toString());
 		
-		return "Am " + a + " ab " + x.get(1) + " - " + y.get(1) + " in Raum " + raum_id ;
+		return a + " ab " + x.get(1) + " - " + y.get(1) + " in Raum " + room.getId();
 		
+	}
+	
+	public String forCalendar(){
+		ArrayList<String> y = DateFormat
+				.SeperateDateTime2String(this.endzeit.toString());
+		
+		return y.get(1) + " | " + this.room.getId();
+	}
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	/**
+	 * @return the timeSlot
+	 */
+	public TimeSlot getTimeSlot() {
+		return timeSlot;
+	}
+
+	/**
+	 * @param timeSlot the timeSlot to set
+	 */
+	public void setTimeSlot(TimeSlot timeSlot) {
+		this.timeSlot = timeSlot;
+	}
+
+	/**
+	 * @return the room
+	 */
+	public Room getRoom() {
+		return room;
+	}
+
+	/**
+	 * @param room the room to set
+	 */
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 
 }

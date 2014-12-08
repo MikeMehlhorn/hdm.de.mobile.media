@@ -3,7 +3,11 @@ package de.hdm.reservierung.client.custom;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.AlertType;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.bootbox.client.Bootbox;
 import org.gwtbootstrap3.extras.bootbox.client.callback.ConfirmCallback;
 
@@ -11,6 +15,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import de.hdm.reservierung.client.ShowRoombookingFromUser;
@@ -63,7 +68,7 @@ public class CustomTable extends FlexTable {
 
 			final CustomButton cancel = new CustomButton(roomBooking.getId());
 
-			this.setText(i, 0, String.valueOf(roomBooking.getRaum_id()));
+			this.setText(i, 0, String.valueOf(roomBooking.getRoom().getId()));
 
 			String a = DateFormat.FormatDateDDMMYYYY2(roomBooking
 					.getStartzeit().toString());
@@ -89,54 +94,32 @@ public class CustomTable extends FlexTable {
 								@Override
 								public void callback(boolean result) {
 									if (result) {
-										ArrayList<Integer> deleteList = new ArrayList<Integer>();
-										deleteList.add(cancel.getpK());
-										service.deleteRaumbuchung(deleteList,
-												new AsyncCallback<Void>() {
+										cancel.setIcon(IconType.REFRESH);
+										cancel.setIconSpin(true);
+										cancel.setType(ButtonType.WARNING);
+										service.deleteRaumbuchung(cancel.getpK(), new AsyncCallback<RoomBooking>() {
+											
+											@Override
+											public void onSuccess(RoomBooking result) {
+												GUIFunctions.clearRootPanel("content1");
+												RootPanel.get("content1").add(
+														new HTML("</br>"));
+												RootPanel.get("content1").add(
+														new HTML("</br>"));
+												RootPanel.get("content1").add(new Alert("Ihre Reservierung am " + result.toString() + " wurde erfolgreich gelöscht.", AlertType.INFO));
+												User user = new User();
+												user.setKuerzel(roomBooking.getUser().getKuerzel());
+												RootPanel.get("content1").add(new ShowRoombookingFromUser(user));
+												
+											}
+											
+											@Override
+											public void onFailure(Throwable caught) {
+												// TODO Auto-generated method stub
+												
+											}
+										});
 
-													@Override
-													public void onSuccess(
-															Void result) {
-														service.cancelMail(
-																roomBooking,
-																new AsyncCallback<Void>() {
-
-																	@Override
-																	public void onSuccess(
-																			Void result) {
-
-																	}
-
-																	@Override
-																	public void onFailure(
-																			Throwable caught) {
-																		// TODO
-																		// Auto-generated
-																		// method
-																		// stub
-
-																	}
-																});
-														User user = new User();
-														user.setKuerzel(roomBooking
-																.getUser_kuerzel());
-														GUIFunctions
-																.clearRootPanel("content1");
-														RootPanel
-																.get("content1")
-																.add(new ShowRoombookingFromUser(
-																		user));
-
-													}
-
-													@Override
-													public void onFailure(
-															Throwable caught) {
-														// TODO Auto-generated
-														// method stub
-
-													}
-												});
 									}
 
 								}

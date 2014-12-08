@@ -20,12 +20,12 @@ public interface ServiceAsync {
 	void getAllRaumbuchungenFromUser(User user,
 			AsyncCallback<ArrayList<RoomBooking>> callback);
 
-	void deleteRaumbuchung(ArrayList<Integer> deleteIdList,
-			AsyncCallback<Void> callback);
+	void deleteRaumbuchung(Integer bookingId,
+			AsyncCallback<RoomBooking> callback);
 
 	void getAllRaumbuchungen(AsyncCallback<ArrayList<RoomBooking>> callback);
 
-	void getAvailableRaumbuchungenByDateForStudent(String date, String room,
+	void getAvailableRaumbuchungenForStudent(String date, String room,
 			User user, AsyncCallback<ArrayList<TimeSlot>> callback);
 
 	void getUser(String kuerzel, AsyncCallback<User> callback);
@@ -33,26 +33,18 @@ public interface ServiceAsync {
 	void cancelMail(RoomBooking roomBooking,
 			AsyncCallback<Void> callback);
 
-	void getAvailableRaumbuchungenByDateForDocent(String date, String room,
+	void getAvailableRaumbuchungenForDocent(String date, String room,
 			User user, AsyncCallback<ArrayList<TimeSlot>> callback);
 
 	void getAllRooms(AsyncCallback<ArrayList<Room>> callback);
 
 	void getTimeSlots(AsyncCallback<ArrayList<TimeSlot>> callback);
 
-	//void insertRaumbuchung(ArrayList<RoomBooking> roomBookingList,
-		//	AsyncCallback<Void> callback);
 
 	void bookingMail(String room, User user,
 			ArrayList<RoomBooking> roomBookingList, AsyncCallback<Void> callback);
 
-	void deleteAndInformUser(ArrayList<TimeSlot> timeSlotList,
-			AsyncCallback<Void> callback);
-
-	void getRoomBooking(Integer bookingId, AsyncCallback<RoomBooking> callback);
-
-	void insertRoomBooking(ArrayList<TimeSlot> overBooking,
-			ArrayList<RoomBooking> roomBooking, String room, User user,
-			AsyncCallback<ArrayList<RoomBooking>> callback);
+	void insertRoomBooking(ArrayList<RoomBooking> roomBooking, String room,
+			User user, AsyncCallback<ArrayList<RoomBooking>> callback);
 
 }

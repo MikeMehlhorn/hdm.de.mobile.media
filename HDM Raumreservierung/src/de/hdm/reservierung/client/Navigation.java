@@ -35,10 +35,10 @@ public class Navigation extends Composite {
 	private static NavigationUiBinder uiBinder = GWT
 			.create(NavigationUiBinder.class);
 
-	private final ServiceAsync greetingService = GWT.create(Service.class);
+	private ServiceAsync service = ClientsideSettings.getService();
 
 	private final Alert alert = new Alert(
-			"Anmeldung fehlgeschlagen!Ungültiger Benutzername oder Passwort",
+			"Anmeldung fehlgeschlagen! Ungültiger Benutzername oder Passwort",
 			AlertType.DANGER);
 
 	interface NavigationUiBinder extends UiBinder<Widget, Navigation> {
@@ -83,7 +83,7 @@ public class Navigation extends Composite {
 		init();
 		if (loggedIn) {
 			// Window.alert(Cookies.getCookie("hdm_raumreservierung"));
-			greetingService.getUser(Cookies.getCookie("hdm_raumreservierung"),
+			service.getUser(Cookies.getCookie("hdm_raumreservierung"),
 					new getUser());
 			loggedIn();
 		} else {
@@ -163,7 +163,7 @@ public class Navigation extends Composite {
 			RootPanel.get("content1").add(alert);
 		} else {
 
-			greetingService.checkLogin(username.getValue(), password.getText(),
+			service.checkLogin(username.getValue(), password.getText(),
 					new AsyncCallback<User>() {
 						@Override
 						public void onSuccess(User user) {

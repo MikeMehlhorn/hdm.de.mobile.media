@@ -2,6 +2,7 @@ package de.hdm.reservierung.server.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.hdm.reservierung.server.DBConnection;

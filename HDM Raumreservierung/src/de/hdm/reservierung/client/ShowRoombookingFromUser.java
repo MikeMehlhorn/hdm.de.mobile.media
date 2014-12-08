@@ -51,7 +51,6 @@ public class ShowRoombookingFromUser extends Template {
 		@Override
 		public void onFailure(Throwable caught) {
 			caught.getMessage();
-
 		}
 
 		@Override

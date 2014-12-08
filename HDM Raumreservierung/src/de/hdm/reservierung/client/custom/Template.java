@@ -21,7 +21,7 @@ public class Template extends Container {
 	public void setHeaderText(String value) {
 		this.add(new HTML("</br>"));
 		this.add(new HTML("</br>"));
-		Heading heading = new Heading(HeadingSize.H2, value);
+		Heading heading = new Heading(HeadingSize.H3, value);
 		heading.setAlignment(Alignment.CENTER);
 		this.add(heading);
 	}

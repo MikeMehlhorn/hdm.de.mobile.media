@@ -1,5 +1,6 @@
 package de.hdm.reservierung.server;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import de.hdm.reservierung.client.Service;
@@ -44,8 +45,11 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 	@Override
-	public void deleteRaumbuchung(ArrayList<Integer> deleteIdList) {
-		roombookingMapper.deleteRaumbuchung(deleteIdList);
+	public RoomBooking deleteRaumbuchung(Integer bookingId) {
+		RoomBooking roomBooking = roombookingMapper.getRaumbuchungById(bookingId);
+		roombookingMapper.deleteRaumbuchung(roomBooking.getId());
+		cancelMail(roomBooking);
+		return roomBooking;
 	}
 
 	@Override
@@ -59,11 +63,11 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 	@Override
-	public ArrayList<TimeSlot> getAvailableRaumbuchungenByDateForStudent(
-			String date, String room, User user) {
+	public ArrayList<TimeSlot> getAvailableRaumbuchungenForStudent(String date,
+			String room, User user) {
 		ArrayList<TimeSlot> timeSlot = getTimeSlots();
-		return roombookingMapper.getAvailableRaumbuchungenByDateForStudent(
-				date, room, user, timeSlot);
+		return roombookingMapper.getAvailableRaumbuchungenForStudent(date,
+				room, user, timeSlot);
 	}
 
 	@Override
@@ -73,16 +77,16 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
 
 	@Override
 	public void cancelMail(RoomBooking roomBooking) {
-		User user = getUser(roomBooking.getUser_kuerzel());
-		SendMail.cancelBooking(roomBooking, user);
+		//User user = getUser(roomBooking.getUser().getKuerzel());
+		SendMail.cancelBooking(roomBooking);
 	}
 
 	@Override
-	public ArrayList<TimeSlot> getAvailableRaumbuchungenByDateForDocent(
-			String date, String room, User user) {
+	public ArrayList<TimeSlot> getAvailableRaumbuchungenForDocent(String date,
+			String room, User user) {
 		ArrayList<TimeSlot> timeSlot = getTimeSlots();
-		return roombookingMapper.getAvailableRaumbuchungenByDateForDocent(date,
-				room, user, timeSlot);
+		return roombookingMapper.getAvailableRaumbuchungenForDocent(date, room,
+				user, timeSlot);
 	}
 
 	@Override
@@ -103,43 +107,39 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
 	}
 
 	@Override
-	public void deleteAndInformUser(ArrayList<TimeSlot> timeSlotList) {
-		for (int i = 0; i < timeSlotList.size(); i++) {
-			RoomBooking roomBooking = getRoomBooking(timeSlotList.get(i)
-					.getBookingId());
-			User user = getUser(roomBooking.getUser_kuerzel());
-			ArrayList<Integer> deleteList = new ArrayList<Integer>();
-			deleteList.add(timeSlotList.get(i).getBookingId());
-			roombookingMapper.deleteRaumbuchung(deleteList);
-			SendMail.overBooking(timeSlotList, roomBooking, user);
-		}
-
-	}
-
-	@Override
-	public RoomBooking getRoomBooking(Integer bookingId) {
-		return roombookingMapper.getRoomBooking(bookingId);
-	}
-
-	@Override
 	public ArrayList<RoomBooking> insertRoomBooking(
-			ArrayList<TimeSlot> overBooking,
 			ArrayList<RoomBooking> roomBookingPar, String room, User user) {
-		
-		for (int i = 0; i < overBooking.size(); i++) {
-			RoomBooking roomBooking = getRoomBooking(overBooking.get(i)
-					.getBookingId());
-			user = getUser(roomBooking.getUser_kuerzel());
-			ArrayList<Integer> deleteList = new ArrayList<Integer>();
-			deleteList.add(overBooking.get(i).getBookingId());
-			roombookingMapper.deleteRaumbuchung(deleteList);
-			SendMail.overBooking(overBooking, roomBooking, user);
+
+		/*
+		 * for (int i = 0; i < overBooking.size(); i++) { RoomBooking
+		 * roomBooking = getRoomBooking(overBooking.get(i) .getBookingId());
+		 * user = getUser(roomBooking.getUser_kuerzel()); ArrayList<Integer>
+		 * deleteList = new ArrayList<Integer>();
+		 * deleteList.add(overBooking.get(i).getBookingId());
+		 * roombookingMapper.deleteRaumbuchung(deleteList);
+		 * SendMail.overBooking(overBooking, roomBooking, user); 
+		 * }
+		 */
+
+		if (user.getRolle().compareTo("Student") == 0) {
+			ArrayList<RoomBooking> roomBooking = roombookingMapper
+					.insertRaumbuchungForStudent(roomBookingPar, user);
+			bookingMail(room, user, roomBooking);
+			return roomBooking;
+		} else {
+			//CheckBooking - gefundene müssen storniert werden und die Studenten benachrichtigt werden
+			
+			ArrayList<RoomBooking> cancelBookings = new  ArrayList<RoomBooking>(roombookingMapper.getCancelBookings(roomBookingPar));
+			for (int i = 0; i < cancelBookings.size(); i++) {
+				roombookingMapper.deleteRaumbuchung(cancelBookings.get(i).getId());
+				SendMail.overBooking(cancelBookings.get(i));
+			}
+			
+			ArrayList<RoomBooking> roomBooking = roombookingMapper.insertRaumbuchungForDocent(roomBookingPar,user);
+			bookingMail(room, user, roomBooking);
+			return roomBooking;
 		}
-		
-		
-		ArrayList<RoomBooking> roomBooking = roombookingMapper.insertRaumbuchung(roomBookingPar);
-		bookingMail(room, user, roomBooking);
-		return roomBooking;
+
 	}
 
 }

@@ -8,10 +8,7 @@ public class CustomImage extends Image {
 public CustomImage(String urlValue) {
 		
 		super.onLoad();
-		this.setResponsive(true);
 		this.setType(ImageType.ROUNDED);
-		this.setHeight("100");
-		this.setWidth("100");
 		this.setUrl(urlValue);
 
 	}
