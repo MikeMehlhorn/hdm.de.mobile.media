@@ -21,8 +21,8 @@ public class SendMail {
 
 	// private static RoombookingMapper raumbuchungsMapper = null;
 	private static Properties props;
-	private static final String username = "hdmraumreservierung@gmail.com";
-	private static final String password = "121peter";
+	private static final String username = "XXXX@gmail.com";
+	private static final String password = "XXXXXX";
 	private static String mailtext = "";
 	private static String betreff = "";
 
